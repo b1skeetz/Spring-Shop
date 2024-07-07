@@ -1,0 +1,26 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Title</title>
+</head>
+<body>
+    <form th:method="GET" th:action="@{/data/products/filter{categoryName}(categoryName = ${category})}" th:object="${category}">
+        <label for="category">
+            <input type="text" id="category" th:name="categoryName"  th:value="${category}" placeholder="Введите название продукта...">
+            <input type="submit" value="Отфильтровать">
+        </label>
+    </form>
+
+    <br/>
+
+    <th:block th:each="product : ${products}">
+        <p>Категория: <b th:text="${product.getCategory().getName()}"/></p>
+        <p>Название: <b th:text="${product.getName()}"/></p>
+        <p>Стоимость: <b th:text="${product.getPrice()}"/></p>
+        <hr>
+    </th:block>
+
+    <a href="/products/create">Создать продукт</a>
+</body>
+</html>
