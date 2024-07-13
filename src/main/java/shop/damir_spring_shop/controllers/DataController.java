@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import shop.damir_spring_shop.models.*;
 import shop.damir_spring_shop.services.CategoryService;
 import shop.damir_spring_shop.services.ProductService;
+import shop.damir_spring_shop.services.PropertyService;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ import java.util.List;
 public class DataController {
     private final ProductService productService;
     private final CategoryService categoryService;
+    private final PropertyService propertyService;
 
     @GetMapping
     public String getProducts(Model model){
@@ -38,6 +40,12 @@ public class DataController {
     @GetMapping(path = "/create")
     public String toCreatePage(@ModelAttribute(name = "newProduct") Product newProduct, Model model){
         model.addAttribute("allCategories", categoryService.findAll());
+        return "create_product";
+    }
+
+    @GetMapping(path = "/create/properties")
+    public String toCreatePage(@RequestParam(name = "id") Long id, Model model){
+        model.addAttribute("properties", propertyService.getPropertiesByCategoryId(id));
         return "create_product";
     }
 

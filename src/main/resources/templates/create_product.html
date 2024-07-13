@@ -16,7 +16,18 @@
     <select name="allCategories" id="category" th:field="*{category.id}">
         <option th:value="${category.id}" th:each="category : ${allCategories}" th:text="${category.name}"/>
     </select>
+    <th:block th:each="property : ${properties}">
+        <label for="propName" th:text="${property.getName()}"/>
+        <input type="text" id="propName">
+    </th:block>
+
     <input type="submit" value="Создать продукт">
 </form>
+
+<!--<form th:method="GET" th:action="@{/products/create/properties{id}(id = ${newProduct.getCategory().getId()})}" th:object="${newProduct}">-->
+<!--</form>-->
+
+
+<script src="/script.js"></script>
 </body>
 </html>
