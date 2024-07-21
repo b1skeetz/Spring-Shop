@@ -5,7 +5,8 @@
     <title>Title</title>
 </head>
 <body>
-<form th:method="POST" th:action="@{/products{propValues}(propValues = ${propValues})}" th:object="${newProduct}">
+<!--<form th:method="POST" th:action="@{/products{propValues}(propValues = ${propValues})}" th:object="${newProduct}">-->
+<form th:method="POST" th:action="@{/products}" th:object="${newProduct}">
     <label for="name">Введите название продукта:</label>
     <input type="text" id="name" th:field="*{name}" placeholder="Название продукта...">
     <br>
@@ -20,7 +21,7 @@
 
     <div id="properties"></div>
 
-    <input type="submit" value="Создать продукт">
+    <input type="submit" value="Создать продукт" id="submitting">
 </form>
 
 <!--<form th:method="GET" th:action="@{/products/create/properties{id}(id = ${newProduct.getCategory().getId()})}" th:object="${newProduct}">-->

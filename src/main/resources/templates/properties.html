@@ -1,5 +1,5 @@
 <th:block th:each="property : ${properties}" >
     <label for="propName" th:text="${property.getName()}"></label>
-    <input type="text" id="propName" th:name="${property.getName()}">
+    <input type="text" id="propName" th:name="propValue">
     <br>
 </th:block>

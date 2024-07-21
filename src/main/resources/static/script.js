@@ -11,3 +11,27 @@ categoryChoose.onchange = function () {
             propertiesElem.innerHTML = responseText;
         });
 };
+
+const buttonSubmit = document.getElementById("submitting");
+
+const propertiesInputs = document.querySelectorAll('#propName');
+const propertiesValuesFromInputs = []
+
+buttonSubmit.onclick = () => {
+    propertiesInputs.forEach(prop => propertiesValuesFromInputs.push(prop.textContent))
+    console.log(propertiesValuesFromInputs)
+}
+
+$.ajax({
+    type: "POST",
+    url: "/products",
+    data: {
+        propValues: propertiesValuesFromInputs,
+    },
+    success: function(response) {
+        console.log(response.data())
+    },
+    error: function(e) {
+        alert('Error: ' + e);
+    }
+});
