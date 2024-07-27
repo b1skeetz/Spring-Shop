@@ -3,6 +3,7 @@ package shop.damir_spring_shop.models;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -10,6 +11,7 @@ import java.util.List;
 @Table(name = "products")
 @Getter
 @Setter
+@ToString
 public class Product {
 
     @Id

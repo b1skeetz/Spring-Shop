@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit product</title>
+</head>
+<body>
+    <th:block>
+        <form th:action="@{/products/edit/{id}(id = ${product.getId()})}" th:method="POST" th:object="${product}">
+            <label for="name">Введите название продукта:</label>
+            <input type="text" id="name" th:field="*{name}" placeholder="Название продукта...">
+            <br>
+            <label for="price">Введите стоимость продукта:</label>
+            <input type="number" id="price" th:field="*{price}">
+
+            <input hidden="hidden" th:value="${product.getCategory()}" th:field="*{category}">
+            <br>
+            <th:block th:each="property : ${product.propValues}">
+                <label for="propName" th:text="${property.property.getName()}"></label>
+                <input type="text" id="propName" th:name="propValue"
+                       th:value="${property.value}">
+                <br>
+            </th:block>
+            <input type="submit" value="Сохранить изменения">
+        </form>
+    </th:block>
+</body>
+</html>

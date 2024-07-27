@@ -38,7 +38,7 @@ create table products
 (
     id           serial8 primary key,
     category_id  int8        not null,
-    product_name varchar(20) not null,
+    product_name varchar(50) not null,
     price        int4        not null,
     foreign key (category_id) references categories (id),
     unique(product_name)
@@ -78,3 +78,24 @@ create table prop_values
     unique (product, property)
 );
 
+insert into prop_values (property_value, property, product)
+values ('Intel', 1, 1),
+       ('8', 2, 1),
+       ('1250', 3, 1);
+
+insert into prop_values (property_value, property, product)
+values ('AMD', 1, 2),
+       ('12', 2, 2),
+       ('AM4', 3, 2);
+
+insert into prop_values (property_value, property, product)
+values ('Samsung', 4, 3),
+       ('27', 5, 3),
+       ('TN', 6, 3),
+       ('2560*1440', 7, 3);
+
+insert into prop_values (property_value, property, product)
+values ('AOC', 4, 4),
+       ('21.5', 5, 4),
+       ('AH-IPS', 6, 4),
+       ('1920*1080', 7, 4);

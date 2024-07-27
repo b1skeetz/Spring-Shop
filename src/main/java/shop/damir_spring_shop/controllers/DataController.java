@@ -24,15 +24,15 @@ public class DataController {
     private final PropValuesRepository propValuesRepository;
 
     @GetMapping
-    public String getProducts(Model model){
+    public String getProducts(Model model) {
         model.addAttribute("products", productRepository.findAll());
         return "all_products";
     }
 
     @GetMapping(path = "/filter")
-    public String filter(@RequestParam(name = "categoryName", required = false) String categoryName, Model model){
+    public String filter(@RequestParam(name = "categoryName", required = false) String categoryName, Model model) {
         List<Product> temp = productRepository.findProductsByCategory_NameContains(categoryName);
-        if(temp.isEmpty()){
+        if (temp.isEmpty()) {
             return getProducts(model);
         }
         model.addAttribute("products", temp);
@@ -42,14 +42,14 @@ public class DataController {
     }
 
     @GetMapping(path = "/create")
-    public String toCreatePage(@ModelAttribute(name = "newProduct") Product newProduct, Model model){
+    public String toCreatePage(@ModelAttribute(name = "newProduct") Product newProduct, Model model) {
         model.addAttribute("allCategories", categoryRepository.findAll());
         model.addAttribute("propValues", new ArrayList<PropValues>());
         return "create_product";
     }
 
     @GetMapping(path = "/create/properties")
-    public String toCreatePage(@RequestParam(name = "id") Long id, Model model){
+    public String toCreatePage(@RequestParam(name = "id") Long id, Model model) {
         List<Property> properties = propertyRepository.findPropertiesByCategory_Id(id);
         model.addAttribute("properties", properties);
 
@@ -57,9 +57,9 @@ public class DataController {
     }
 
     @PostMapping // Выберите категорию для создания товара,
-                    // а потом уже переход на страницу создания товара
+    // а потом уже переход на страницу создания товара
     public String create(@ModelAttribute(name = "newProduct") Product newProduct,
-                         @RequestParam(name="propValue") List<String> propValues){
+                         @RequestParam(name = "propValue") List<String> propValues) {
         productRepository.save(newProduct);
         // Передать строковый массив, пройтись циклом по нему и создавать каждый раз новый propValue объект, передавая
         // в его поле value строку из массива.
@@ -72,6 +72,22 @@ public class DataController {
             temp.setProperty(props.get(i));
             propValuesRepository.save(temp);
         }
+        return "redirect:/products";
+    }
+
+    @GetMapping(path = "/edit/{id}")
+    public String toEditPage(@PathVariable(name = "id") Long id, Model model) {
+        Product temp = productRepository.findById(id).orElse(new Product());
+        model.addAttribute("product", temp); // добавить пустой список propValues
+
+        return "edit_product";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String edit(@ModelAttribute("product") Product product){
+        System.out.println(product); // propValues лист передается как null
+        productRepository.save(product);
+
         return "redirect:/products";
     }
 }
