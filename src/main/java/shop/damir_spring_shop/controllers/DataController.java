@@ -60,9 +60,13 @@ public class DataController {
     // а потом уже переход на страницу создания товара
     public String create(@ModelAttribute(name = "newProduct") Product newProduct,
                          @RequestParam(name = "propValue") List<String> propValues) {
-        productRepository.save(newProduct);
         // Передать строковый массив, пройтись циклом по нему и создавать каждый раз новый propValue объект, передавая
         // в его поле value строку из массива.
+//        List<PropValues> filledPropValuesList = parsePropValues(newProduct, propValues);
+//        newProduct.setPropValues(filledPropValuesList);
+
+        productRepository.save(newProduct);
+
         List<Property> props = propertyRepository.findAll().stream().filter(property ->
                 Objects.equals(property.getCategory().getId(), newProduct.getCategory().getId())).toList();
         for (int i = 0; i < propValues.size(); i++) {
@@ -84,10 +88,26 @@ public class DataController {
     }
 
     @PostMapping("/edit/{id}")
-    public String edit(@ModelAttribute("product") Product product){
+    public String edit(@ModelAttribute("product") Product product,
+                       @RequestParam(name = "propValue") List<String> propValues,
+                       @PathVariable(name = "id") Long id){
         System.out.println(product); // propValues лист передается как null
+        product.setId(id);
         productRepository.save(product);
-
+        List<PropValues> productsPropValues = propValuesRepository.findAll()
+                .stream().filter(pv -> Objects.equals(pv.getProduct().getId(), id)).toList();
+        // `/edit?productId=...&productName=...&productPrice=...&optionId=2&value=AMD&optionId=3&value=ABC`
+        // @RequestParam(name="optionId") List<Integer>
+        // @RequestParam(name="value") List<String>
+        if(productsPropValues.size() == propValues.size()){
+            for (int i = 0; i < productsPropValues.size(); i++) {
+                productsPropValues.get(i).setValue(propValues.get(i));
+                propValuesRepository.save(productsPropValues.get(i));
+            }
+        } else {
+            throw new RuntimeException(String.format("productsPropValues.size() {%d} is not equal " +
+                    "with propValues.size() {%d}", productsPropValues.size(), propValues.size()));
+        }
         return "redirect:/products";
     }
 }
