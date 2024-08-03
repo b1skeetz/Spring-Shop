@@ -41,7 +41,7 @@ create table products
     product_name varchar(50) not null,
     price        int4        not null,
     foreign key (category_id) references categories (id),
-    unique(product_name)
+    unique (product_name)
 );
 insert into products (product_name, category_id, price)
 values ('Intel Core I9 9900', 1, 250000),
@@ -55,7 +55,7 @@ create table properties
     property_name varchar(30) not null,
     category      int8        not null,
     foreign key (category) references categories (id),
-    unique(category, property_name)
+    unique (category, property_name)
 );
 insert into properties (property_name, category)
 values ('Производитель', 1),   -- 1
@@ -99,3 +99,13 @@ values ('AOC', 4, 4),
        ('21.5', 5, 4),
        ('AH-IPS', 6, 4),
        ('1920*1080', 7, 4);
+
+create table feedbacks
+(
+    id serial8 primary key,
+    user_id int8 not null,
+    product_id int8 not null,
+    release_status boolean not null default false,
+    mark int2 not null check ( mark > 0 and mark < 6 ),
+    content varchar(300)
+);

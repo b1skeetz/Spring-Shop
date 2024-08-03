@@ -16,7 +16,7 @@
 
     <th:block th:each="product : ${products}">
         <p>Категория: <b th:text="${product.getCategory().getName()}"/></p>
-        <p>Название: <b th:text="${product.getName()}"/></p>
+        <p>Название: <a th:href="@{/products/{id}(id = ${product.getId()})}" th:text="${product.getName()}"/></p>
         <p>Стоимость: <b th:text="${product.getPrice()}"/></p>
         <a th:href="@{/products/edit/{id}(id = ${product.getId()})}">Редактировать</a>
         <hr>

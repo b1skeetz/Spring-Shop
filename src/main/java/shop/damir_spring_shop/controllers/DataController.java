@@ -111,6 +111,14 @@ public class DataController {
         return "redirect:/products";
     }
 
+    @GetMapping("{id}")
+    public String getOneProduct(@PathVariable("id") Long id, Model model){
+        Product product = productRepository.findProductsById(id);
+        model.addAttribute("product", product);
+
+        return "one_product";
+    }
+
     // Создать страницу просмотра товара со всей информацией без возможности отредактировать что либо,
     // все отзывы на товар и средний рейтинг. Также создать таблицу отзывов с полями: пользователь, товар,
     // состояние публикации (true, false -> нужна модерация, т.е. по умолчанию все отзывы в базу отправляются со статусом false,

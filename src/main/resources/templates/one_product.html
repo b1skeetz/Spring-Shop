@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>One product</title>
+</head>
+<body>
+<th:block th:object="${product}">
+    <p>Категория: <b th:text="${product.getCategory().getName()}"/></p>
+    <p>Название: <p th:text="${product.getName()}"/></p>
+    <p>Стоимость: <b th:text="${product.getPrice()}"/></p>
+    <th:block th:each="propValue : ${product.getPropValues()}">
+        <p th:text="${propValue.property.getName() + ' : ' + propValue.getValue()}"></p>
+    </th:block>
+    <a th:href="@{/products}">Вернуться</a>
+    <hr>
+</th:block>
+</body>
+</html>
