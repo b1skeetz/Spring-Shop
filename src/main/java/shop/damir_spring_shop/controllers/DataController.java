@@ -5,14 +5,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import shop.damir_spring_shop.models.*;
-import shop.damir_spring_shop.repositories.CategoryRepository;
-import shop.damir_spring_shop.repositories.ProductRepository;
-import shop.damir_spring_shop.repositories.PropValuesRepository;
-import shop.damir_spring_shop.repositories.PropertyRepository;
+import shop.damir_spring_shop.repositories.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -22,6 +20,8 @@ public class DataController {
     private final CategoryRepository categoryRepository;
     private final PropertyRepository propertyRepository;
     private final PropValuesRepository propValuesRepository;
+    private final UserRepository userRepository;
+    private final FeedbackRepository feedbackRepository;
 
     @GetMapping
     public String getProducts(Model model) {
@@ -112,11 +112,33 @@ public class DataController {
     }
 
     @GetMapping("{id}")
-    public String getOneProduct(@PathVariable("id") Long id, Model model){
+    public String getOneProduct(@PathVariable("id") Long id, Model model,
+                                @ModelAttribute("feedback") Feedback feedback){
         Product product = productRepository.findProductsById(id);
         model.addAttribute("product", product);
 
         return "one_product";
+    }
+
+    @PostMapping("{id}")
+    public String saveFeedback(@PathVariable("id") Long id, Model model,
+                               @ModelAttribute(name = "feedback") Feedback feedback){
+
+        User currentUser = userRepository.findById(1L).orElse(new User());
+        Product currentProduct = productRepository.findProductsById(id);
+        model.addAttribute("product", currentProduct);
+        Optional<Feedback> ifFeedbackExists = feedbackRepository.findFeedbackByUserAndProduct(currentUser, currentProduct);
+        if(ifFeedbackExists.isPresent()){
+            System.out.println("Вы уже отправляли отзыв!");
+            return "one_product";
+        }
+        feedback.setReleaseStatus(false);
+        feedback.setUser(currentUser);
+        feedback.setProduct(currentProduct);
+
+        feedbackRepository.save(feedback);
+
+        return "redirect:/products/{id}";
     }
 
     // Создать страницу просмотра товара со всей информацией без возможности отредактировать что либо,

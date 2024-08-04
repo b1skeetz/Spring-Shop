@@ -21,7 +21,8 @@ drop table categories;
 drop table products;
 drop table properties;
 drop table prop_values;
-
+drop table feedbacks;
+drop table users;
 
 
 create table categories
@@ -106,6 +107,19 @@ create table feedbacks
     user_id int8 not null,
     product_id int8 not null,
     release_status boolean not null default false,
-    mark int2 not null check ( mark > 0 and mark < 6 ),
-    content varchar(300)
+    mark int4 not null check ( mark > 0 and mark < 6 ),
+    content varchar(300),
+    foreign key (product_id) references products (id),
+    foreign key (user_id) references users (id),
+    unique (user_id, product_id)
+);
+
+create table users (
+    id serial8 primary key,
+    first_name varchar(30) not null,
+    last_name varchar(30) not null,
+    login varchar(30) not null,
+    password varchar(30) not null,
+    phone varchar(17) not null,
+    role int4 not null
 );

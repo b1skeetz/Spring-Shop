@@ -28,4 +28,7 @@ public class Product {
 
     @OneToMany(mappedBy = "product")
     private List<PropValues> propValues;
+
+    @OneToMany(mappedBy = "product")
+    private List<Feedback> feedbacks;
 }
