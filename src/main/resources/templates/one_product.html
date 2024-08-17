@@ -31,5 +31,12 @@
         <input type="submit" value="Отправить отзыв">
     </form>
 </th:block>
+<hr>
+<th:block th:each="oneFeedback : ${feedbacks}">
+    <p th:text="${oneFeedback.content}"/>
+    <p th:text="${oneFeedback.mark}"/>
+    <hr>
+</th:block>
+<h3>Средний рейтинг: <span th:text="${averageRate}"></span> </h3>
 </body>
 </html>

@@ -56,15 +56,9 @@ public class DataController {
         return "properties";
     }
 
-    @PostMapping // Выберите категорию для создания товара,
-    // а потом уже переход на страницу создания товара
+    @PostMapping
     public String create(@ModelAttribute(name = "newProduct") Product newProduct,
                          @RequestParam(name = "propValue") List<String> propValues) {
-        // Передать строковый массив, пройтись циклом по нему и создавать каждый раз новый propValue объект, передавая
-        // в его поле value строку из массива.
-//        List<PropValues> filledPropValuesList = parsePropValues(newProduct, propValues);
-//        newProduct.setPropValues(filledPropValuesList);
-
         productRepository.save(newProduct);
 
         List<Property> props = propertyRepository.findAll().stream().filter(property ->
@@ -96,9 +90,6 @@ public class DataController {
         productRepository.save(product);
         List<PropValues> productsPropValues = propValuesRepository.findAll()
                 .stream().filter(pv -> Objects.equals(pv.getProduct().getId(), id)).toList();
-        // `/edit?productId=...&productName=...&productPrice=...&optionId=2&value=AMD&optionId=3&value=ABC`
-        // @RequestParam(name="optionId") List<Integer>
-        // @RequestParam(name="value") List<String>
         if(productsPropValues.size() == propValues.size()){
             for (int i = 0; i < productsPropValues.size(); i++) {
                 productsPropValues.get(i).setValue(propValues.get(i));
@@ -115,7 +106,19 @@ public class DataController {
     public String getOneProduct(@PathVariable("id") Long id, Model model,
                                 @ModelAttribute("feedback") Feedback feedback){
         Product product = productRepository.findProductsById(id);
+        List<Feedback> approvedFeedbacks = feedbackRepository.findFeedbackByReleaseStatus(true);
         model.addAttribute("product", product);
+        model.addAttribute("feedbacks", approvedFeedbacks);
+
+        double avgRate;
+        double sum = 0;
+        for (Feedback productFeedback : approvedFeedbacks) {
+            sum += productFeedback.getMark();
+        }
+        avgRate = sum / product.getFeedbacks().size();
+        model.addAttribute("averageRate", avgRate);
+
+        // https://www.baeldung.com/jpa-many-to-many для связи корзина и продукт
 
         return "one_product";
     }
@@ -124,7 +127,7 @@ public class DataController {
     public String saveFeedback(@PathVariable("id") Long id, Model model,
                                @ModelAttribute(name = "feedback") Feedback feedback){
 
-        User currentUser = userRepository.findById(1L).orElse(new User());
+        User currentUser = userRepository.findById(1L).orElse(new User()); // Замоканный юзер
         Product currentProduct = productRepository.findProductsById(id);
         model.addAttribute("product", currentProduct);
         Optional<Feedback> ifFeedbackExists = feedbackRepository.findFeedbackByUserAndProduct(currentUser, currentProduct);
