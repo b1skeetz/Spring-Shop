@@ -123,3 +123,15 @@ create table users (
     phone varchar(17) not null,
     role int4 not null
 );
+
+insert into users (first_name, last_name, login, password, phone, role)
+VALUES ('Damir', 'Kadyrzhanov', 'damirk120404@gmail.com', '123456', '+77777777777', 2);
+
+create table baskets(
+    id serial8 primary key,
+    user_id int8 not null,
+    product_id int8 not null,
+    amount int4 not null default 1,
+    foreign key (user_id) references users (id),
+    foreign key (product_id) references products (id)
+);

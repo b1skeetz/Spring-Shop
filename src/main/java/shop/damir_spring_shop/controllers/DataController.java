@@ -22,6 +22,7 @@ public class DataController {
     private final PropValuesRepository propValuesRepository;
     private final UserRepository userRepository;
     private final FeedbackRepository feedbackRepository;
+    private final BasketRepository basketRepository;
 
     @GetMapping
     public String getProducts(Model model) {
@@ -84,13 +85,13 @@ public class DataController {
     @PostMapping("/edit/{id}")
     public String edit(@ModelAttribute("product") Product product,
                        @RequestParam(name = "propValue") List<String> propValues,
-                       @PathVariable(name = "id") Long id){
+                       @PathVariable(name = "id") Long id) {
         System.out.println(product); // propValues лист передается как null
         product.setId(id);
         productRepository.save(product);
         List<PropValues> productsPropValues = propValuesRepository.findAll()
                 .stream().filter(pv -> Objects.equals(pv.getProduct().getId(), id)).toList();
-        if(productsPropValues.size() == propValues.size()){
+        if (productsPropValues.size() == propValues.size()) {
             for (int i = 0; i < productsPropValues.size(); i++) {
                 productsPropValues.get(i).setValue(propValues.get(i));
                 propValuesRepository.save(productsPropValues.get(i));
@@ -104,7 +105,7 @@ public class DataController {
 
     @GetMapping("{id}")
     public String getOneProduct(@PathVariable("id") Long id, Model model,
-                                @ModelAttribute("feedback") Feedback feedback){
+                                @ModelAttribute("feedback") Feedback feedback) {
         Product product = productRepository.findProductsById(id);
         List<Feedback> approvedFeedbacks = feedbackRepository.findFeedbackByReleaseStatus(true);
         model.addAttribute("product", product);
@@ -125,13 +126,13 @@ public class DataController {
 
     @PostMapping("{id}")
     public String saveFeedback(@PathVariable("id") Long id, Model model,
-                               @ModelAttribute(name = "feedback") Feedback feedback){
+                               @ModelAttribute(name = "feedback") Feedback feedback) {
 
         User currentUser = userRepository.findById(1L).orElse(new User()); // Замоканный юзер
         Product currentProduct = productRepository.findProductsById(id);
         model.addAttribute("product", currentProduct);
         Optional<Feedback> ifFeedbackExists = feedbackRepository.findFeedbackByUserAndProduct(currentUser, currentProduct);
-        if(ifFeedbackExists.isPresent()){
+        if (ifFeedbackExists.isPresent()) {
             System.out.println("Вы уже отправляли отзыв!");
             return "one_product";
         }
@@ -144,10 +145,19 @@ public class DataController {
         return "redirect:/products/{id}";
     }
 
-    // Создать страницу просмотра товара со всей информацией без возможности отредактировать что либо,
-    // все отзывы на товар и средний рейтинг. Также создать таблицу отзывов с полями: пользователь, товар,
-    // состояние публикации (true, false -> нужна модерация, т.е. по умолчанию все отзывы в базу отправляются со статусом false,
-    // а после модерации true, соответственно все отображаемые отзывы имеют только статус true),
-    // оценка (1-5), комментарий. На этой же странице просмотра реализовать форму создания и отправки отзыва.
-    // На один и тот же товар можно отправлять только 1 отзыв. Редактировать и удалять отзыв нельзя.
+    @PostMapping("{id}/basket")
+    public String addProductToBasket(@PathVariable("id") Long id) {
+        User currentUser = userRepository.findById(1L).orElse(new User()); // Замоканный юзер
+        Product currentProduct = productRepository.findProductsById(id);
+        int amount = 1;
+
+        Basket basket = new Basket();
+        basket.setUser(currentUser);
+        basket.setProduct(currentProduct);
+        basket.setAmount(amount);
+
+        basketRepository.save(basket);
+
+        return "redirect:/products";
+    }
 }
