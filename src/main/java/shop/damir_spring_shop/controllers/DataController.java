@@ -119,7 +119,8 @@ public class DataController {
         avgRate = sum / product.getFeedbacks().size();
         model.addAttribute("averageRate", avgRate);
 
-        // https://www.baeldung.com/jpa-many-to-many для связи корзина и продукт
+        boolean ifBasketExist = basketRepository.existsByUserIdAndProductId(1L, product.getId()); // Замоканный юзер
+        model.addAttribute("ifBasketExist", ifBasketExist);
 
         return "one_product";
     }

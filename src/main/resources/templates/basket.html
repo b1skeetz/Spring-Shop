@@ -15,10 +15,11 @@
     <form th:action="@{/basket/{id}/decrease(id = ${basket.id})}" th:method="POST">
         <button type="submit">-</button>
     </form>
-    <form th:action="@{/basket/{id}(id = ${basket.id})}" th:method="DELETE">
+    <form th:action="@{/basket/{id}(id = ${basket.id})}" th:method="POST">
         <button type="submit">Удалить товар</button>
     </form>
     <hr>
 </th:block>
+<a href="/products">Выйти из корзины</a>
 </body>
 </html>

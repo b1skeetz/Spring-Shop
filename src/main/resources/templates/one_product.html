@@ -15,7 +15,7 @@
     <a th:href="@{/products}">Вернуться</a>
     <hr>
 </th:block>
-<th:block>
+<th:block th:if="${ifBasketExist == false}">
     <form th:action="@{/products/{id}/basket(id = ${product.id})}" th:method="POST">
         <button type="submit">Добавить в корзину</button>
     </form>
