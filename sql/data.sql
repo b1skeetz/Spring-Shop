@@ -22,6 +22,7 @@ drop table products;
 drop table properties;
 drop table prop_values;
 drop table feedbacks;
+drop table baskets;
 drop table users;
 
 
@@ -121,13 +122,14 @@ create table users (
     login varchar(30) not null,
     password varchar(30) not null,
     phone varchar(17) not null,
-    role int4 not null
+    role int2 not null
 );
 
 insert into users (first_name, last_name, login, password, phone, role)
-VALUES ('Damir', 'Kadyrzhanov', 'damirk120404@gmail.com', '123456', '+77777777777', 2);
+VALUES ('Damir', 'Kadyrzhanov', 'damirk120404@gmail.com', '123456', '+77777777777', 1);
+insert into users (first_name, last_name, login, password, phone, role)
+values ('Admin', 'Admin', 'admin', 'admin', '+77777777777', 0);
 
-drop table baskets;
 create table baskets(
     id serial8 primary key,
     user_id int8 not null,

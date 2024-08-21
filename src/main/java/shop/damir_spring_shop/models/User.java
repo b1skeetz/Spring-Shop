@@ -3,6 +3,7 @@ package shop.damir_spring_shop.models;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import shop.damir_spring_shop.models.enums.UserRole;
 
 import javax.naming.Name;
 import java.util.List;
@@ -32,7 +33,7 @@ public class User {
     private String phone;
 
     @Column(name="role")
-    private Integer role;
+    private UserRole role;
 
     @OneToMany(mappedBy = "user")
     private List<Feedback> feedbacks;

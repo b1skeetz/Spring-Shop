@@ -161,4 +161,10 @@ public class DataController {
 
         return "redirect:/products";
     }
+
+    @GetMapping("/delete/{id}")
+    public String deleteProduct(@PathVariable("id") Long id){
+        productRepository.deleteById(id);
+        return "redirect:/products";
+    }
 }
