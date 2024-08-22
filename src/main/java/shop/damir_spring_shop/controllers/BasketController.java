@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import shop.damir_spring_shop.models.Basket;
 import shop.damir_spring_shop.models.User;
 import shop.damir_spring_shop.repositories.BasketRepository;
+import shop.damir_spring_shop.services.UserService;
 
 import java.util.List;
 
@@ -15,12 +16,14 @@ import java.util.List;
 @RequestMapping(path = "/basket")
 public class BasketController {
     private final BasketRepository basketRepository;
+    private final UserService userService;
 
     // TODO Внедрить логику с айдишником пользователя, когда появится авторизация
 
-    @GetMapping("{id}")
-    public String showBasket(@PathVariable("id") Long id, Model model) {
-        List<Basket> baskets = basketRepository.findBasketsByUserId(id);
+    @GetMapping()
+    public String showBasket(Model model) {
+        User currentUser = userService.getCurrentUser();
+        List<Basket> baskets = basketRepository.findBasketsByUserId(currentUser.getId());
         model.addAttribute("baskets", baskets);
 
         return "basket";
@@ -32,7 +35,7 @@ public class BasketController {
         basket.setAmount(basket.getAmount() + 1);
         basketRepository.save(basket);
 
-        return showBasket(basket.getUser().getId(), model);
+        return showBasket(model);
     }
 
     @PostMapping("{id}/decrease")
@@ -40,21 +43,19 @@ public class BasketController {
         Basket basket = basketRepository.findBasketById(id);
         basket.setAmount(basket.getAmount() - 1);
         if (basket.getAmount() == 0) {
-            User user = basket.getUser();
             deleteBasket(id, model);
-            return showBasket(user.getId(), model);
+            return showBasket(model);
         }
         basketRepository.save(basket);
 
-        return showBasket(basket.getUser().getId(), model);
+        return showBasket(model);
     }
 
     @PostMapping("{id}")
     public String deleteBasket(@PathVariable("id") Long id, Model model) {
         Basket basketForDelete = basketRepository.findBasketById(id);
-        User user = basketForDelete.getUser();
         basketRepository.delete(basketForDelete);
 
-        return showBasket(user.getId(), model);
+        return showBasket(model);
     }
 }

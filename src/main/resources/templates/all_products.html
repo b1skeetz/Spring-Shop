@@ -1,10 +1,9 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>Products list</title>
-</head>
+<th:block th:replace="~{fragment/head_fragment :: head('Список товаров')}"></th:block>
 <body>
+<th:block th:replace="~{fragment/header_fragment :: header}"></th:block>
+<main>
     <form th:method="GET" th:action="@{/data/products/filter{categoryName}(categoryName = ${category})}" th:object="${category}">
         <label for="category">
             <input type="text" id="category" th:name="categoryName"  th:value="${category}" placeholder="Введите название продукта...">
@@ -18,11 +17,13 @@
         <p>Категория: <b th:text="${product.getCategory().getName()}"/></p>
         <p>Название: <a th:href="@{/products/{id}(id = ${product.getId()})}" th:text="${product.getName()}"/></p>
         <p>Стоимость: <b th:text="${product.getPrice()}"/></p>
-        <a th:href="@{/products/edit/{id}(id = ${product.getId()})}">Редактировать</a>
+        <a th:href="@{/products/edit/{id}(id = ${product.getId()})}" class="btn btn-outline-success" th:classappend="${#authorization.expr('hasRole(''admin'')') ? '' : 'disabled'}">Редактировать</a>
         <hr>
     </th:block>
 
-    <a href="/products/create">Создать продукт</a>
-    <a href="/basket/1">Перейти в корзину</a> <!--Замоканный айди для пользователя-->
+
+
+</main>
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Edit product</title>
-</head>
+<th:block th:replace="~{fragment/head_fragment :: head('Изменить товар')}"></th:block>
 <body>
+<th:block th:replace="~{fragment/header_fragment :: header}"></th:block>
+<main>
     <th:block>
         <form th:action="@{/products/edit/{id}(id = ${product.getId()})}" th:method="POST" th:object="${product}">
             <label for="name">Введите название продукта:</label>
@@ -24,5 +23,7 @@
             <input type="submit" value="Сохранить изменения">
         </form>
     </th:block>
+</main>
+    <script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

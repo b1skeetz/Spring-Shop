@@ -1,47 +1,49 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>One product</title>
-</head>
+<th:block th:replace="~{fragment/head_fragment :: head('Просмотр товара')}"></th:block>
 <body>
-<th:block th:object="${product}">
-    <p>Категория: <b th:text="${product.getCategory().getName()}"/></p>
-    <p>Название: <b th:text="${product.getName()}"/></p>
-    <p>Стоимость: <b th:text="${product.getPrice()}"/></p>
-    <th:block th:each="propValue : ${product.getPropValues()}">
-        <p th:text="${propValue.property.getName() + ' : ' + propValue.getValue()}"></p>
-    </th:block>
-    <a th:href="@{/products}">Вернуться</a>
-    <hr>
-</th:block>
-<th:block th:if="${ifBasketExist == false}">
-    <form th:action="@{/products/{id}/basket(id = ${product.id})}" th:method="POST">
-        <button type="submit">Добавить в корзину</button>
-    </form>
-</th:block>
-<th:block>
-    <form th:action="@{/products/{id}(id = ${product.id})}" th:method="POST" th:object="${feedback}">
-        <label for="mark">Поставьте оценку: </label>
-        <select name="mark" id="mark" th:field="*{mark}">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-        </select>
+<th:block th:replace="~{fragment/header_fragment :: header}"></th:block>
+<main>
 
-        <label for="content">Напишите комментарий: </label>
-        <input type="text" th:field="*{content}" id="content">
-        <input type="submit" value="Отправить отзыв">
-    </form>
-</th:block>
-<hr>
-<th:block th:each="oneFeedback : ${feedbacks}">
-    <p th:text="${oneFeedback.content}"/>
-    <p th:text="${oneFeedback.mark}"/>
+    <th:block th:object="${product}">
+        <p>Категория: <b th:text="${product.getCategory().getName()}"/></p>
+        <p>Название: <b th:text="${product.getName()}"/></p>
+        <p>Стоимость: <b th:text="${product.getPrice()}"/></p>
+        <th:block th:each="propValue : ${product.getPropValues()}">
+            <p th:text="${propValue.property.getName() + ' : ' + propValue.getValue()}"></p>
+        </th:block>
+        <a th:href="@{/products}">Вернуться</a>
+        <hr>
+    </th:block>
+    <th:block th:if="${ifBasketExist == false}">
+        <form th:action="@{/products/{id}/basket(id = ${product.id})}" th:method="POST">
+            <button type="submit">Добавить в корзину</button>
+        </form>
+    </th:block>
+    <th:block>
+        <form th:action="@{/products/{id}(id = ${product.id})}" th:method="POST" th:object="${feedback}">
+            <label for="mark">Поставьте оценку: </label>
+            <select name="mark" id="mark" th:field="*{mark}">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+
+            <label for="content">Напишите комментарий: </label>
+            <input type="text" th:field="*{content}" id="content">
+            <input type="submit" value="Отправить отзыв">
+        </form>
+    </th:block>
     <hr>
-</th:block>
-<h3>Средний рейтинг: <span th:text="${averageRate}"></span></h3>
+    <th:block th:each="oneFeedback : ${feedbacks}">
+        <p th:text="${oneFeedback.content}"/>
+        <p th:text="${oneFeedback.mark}"/>
+        <hr>
+    </th:block>
+    <h3>Средний рейтинг: <span th:text="${averageRate}"></span></h3>
+</main>
+    <script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

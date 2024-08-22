@@ -28,6 +28,7 @@ public class RegistrationController {
 
     @PostMapping
     private String registration(@ModelAttribute(name = "user") User user){
+        // TODO Настроить шифровку паролей
         user.setRole(UserRole.USER);
         userRepository.save(user);
         Authentication authentication = new UsernamePasswordAuthenticationToken(

@@ -5,7 +5,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import shop.damir_spring_shop.models.*;
+import shop.damir_spring_shop.models.enums.UserRole;
 import shop.damir_spring_shop.repositories.*;
+import shop.damir_spring_shop.services.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +25,16 @@ public class DataController {
     private final UserRepository userRepository;
     private final FeedbackRepository feedbackRepository;
     private final BasketRepository basketRepository;
+    private final UserService userService;
 
     @GetMapping
     public String getProducts(Model model) {
-        model.addAttribute("products", productRepository.findAll());
+        User currentUser = userService.getCurrentUser();
+        List<Product> products = new ArrayList<>();
+        if(currentUser != null){
+            products = productRepository.findAll();
+        }
+        model.addAttribute("products", products);
         return "all_products";
     }
 
@@ -119,7 +127,8 @@ public class DataController {
         avgRate = sum / product.getFeedbacks().size();
         model.addAttribute("averageRate", avgRate);
 
-        boolean ifBasketExist = basketRepository.existsByUserIdAndProductId(1L, product.getId()); // Замоканный юзер
+        User currentUser = userService.getCurrentUser();
+        boolean ifBasketExist = basketRepository.existsByUserIdAndProductId(currentUser.getId(), product.getId());
         model.addAttribute("ifBasketExist", ifBasketExist);
 
         return "one_product";
@@ -129,7 +138,7 @@ public class DataController {
     public String saveFeedback(@PathVariable("id") Long id, Model model,
                                @ModelAttribute(name = "feedback") Feedback feedback) {
 
-        User currentUser = userRepository.findById(1L).orElse(new User()); // Замоканный юзер
+        User currentUser = userService.getCurrentUser();
         Product currentProduct = productRepository.findProductsById(id);
         model.addAttribute("product", currentProduct);
         Optional<Feedback> ifFeedbackExists = feedbackRepository.findFeedbackByUserAndProduct(currentUser, currentProduct);
@@ -148,7 +157,7 @@ public class DataController {
 
     @PostMapping("{id}/basket")
     public String addProductToBasket(@PathVariable("id") Long id) {
-        User currentUser = userRepository.findById(1L).orElse(new User()); // Замоканный юзер
+        User currentUser = userService.getCurrentUser();
         Product currentProduct = productRepository.findProductsById(id);
         int amount = 1;
 

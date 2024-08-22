@@ -13,6 +13,7 @@
             </th:block>
             <th:block th:if="${#authorization.expr('isAuthenticated()')}">
                 <a th:href="@{/logout}" class="btn btn-outline-danger" th:text="${'Выход (' + #authentication.name + ')'}"></a>
+                <a th:href="@{/basket}" class="btn btn-outline-primary me-3">Перейти в корзину</a>
             </th:block>
         </div>
     </div>

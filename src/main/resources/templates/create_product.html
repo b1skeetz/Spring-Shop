@@ -1,33 +1,33 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Create Product</title>
-</head>
+<th:block th:replace="~{fragment/head_fragment :: head('Создать товар')}"></th:block>
 <body>
-<!--<form th:method="POST" th:action="@{/products{propValues}(propValues = ${propValues})}" th:object="${newProduct}">-->
-<form th:method="POST" th:action="@{/products}" th:object="${newProduct}">
-    <label for="name">Введите название продукта:</label>
-    <input type="text" id="name" th:field="*{name}" placeholder="Название продукта...">
-    <br>
-    <label for="price">Введите стоимость продукта:</label>
-    <input type="number" id="price" th:field="*{price}">
-    <br>
-    <label for="category">Выберите категорию для товара:</label>
-    <select name="allCategories" id="category" th:field="*{category.id}">
-        <option th:value="0" selected="selected">Выберите категорию</option>
-        <option th:value="${category.id}" th:each="category : ${allCategories}" th:text="${category.name}"/>
-    </select>
+<th:block th:replace="~{fragment/header_fragment :: header}"></th:block>
+<main>
+    <!--<form th:method="POST" th:action="@{/products{propValues}(propValues = ${propValues})}" th:object="${newProduct}">-->
+    <form th:method="POST" th:action="@{/products}" th:object="${newProduct}">
+        <label for="name">Введите название продукта:</label>
+        <input type="text" id="name" th:field="*{name}" placeholder="Название продукта...">
+        <br>
+        <label for="price">Введите стоимость продукта:</label>
+        <input type="number" id="price" th:field="*{price}">
+        <br>
+        <label for="category">Выберите категорию для товара:</label>
+        <select name="allCategories" id="category" th:field="*{category.id}">
+            <option th:value="0" selected="selected">Выберите категорию</option>
+            <option th:value="${category.id}" th:each="category : ${allCategories}" th:text="${category.name}"/>
+        </select>
 
-    <div id="properties"></div>
+        <div id="properties"></div>
 
-    <input type="submit" value="Создать продукт" id="submitting">
-</form>
+        <input type="submit" value="Создать продукт" id="submitting">
+    </form>
 
-<!--<form th:method="GET" th:action="@{/products/create/properties{id}(id = ${newProduct.getCategory().getId()})}" th:object="${newProduct}">-->
-<!--</form>-->
+    <!--<form th:method="GET" th:action="@{/products/create/properties{id}(id = ${newProduct.getCategory().getId()})}" th:object="${newProduct}">-->
+    <!--</form>-->
 
-
+</main>
 <script src="/script.js"></script>
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

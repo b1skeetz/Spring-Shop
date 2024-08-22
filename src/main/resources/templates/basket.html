@@ -1,25 +1,26 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Basket</title>
-</head>
+<th:block th:replace="~{fragment/head_fragment :: head('Корзина')}"></th:block>
 <body>
-<th:block th:each="basket : ${baskets}">
-    <p>Название товара: <span th:text="${basket.product.name}"></span></p>
-    <p>Цена: <span th:text="${basket.product.price}"></span> тг.</p>
-    <p>Количество: <span th:text="${basket.amount}"></span> шт.</p>
-    <form th:action="@{/basket/{id}/increase(id = ${basket.id})}" th:method="POST">
-        <button type="submit">+</button>
-    </form>
-    <form th:action="@{/basket/{id}/decrease(id = ${basket.id})}" th:method="POST">
-        <button type="submit">-</button>
-    </form>
-    <form th:action="@{/basket/{id}(id = ${basket.id})}" th:method="POST">
-        <button type="submit">Удалить товар</button>
-    </form>
-    <hr>
-</th:block>
-<a href="/products">Выйти из корзины</a>
+<th:block th:replace="~{fragment/header_fragment :: header}"></th:block>
+<main>
+    <th:block th:each="basket : ${baskets}">
+        <p>Название товара: <span th:text="${basket.product.name}"></span></p>
+        <p>Цена: <span th:text="${basket.product.price}"></span> тг.</p>
+        <p>Количество: <span th:text="${basket.amount}"></span> шт.</p>
+        <form th:action="@{/basket/{id}/increase(id = ${basket.id})}" th:method="POST">
+            <button type="submit">+</button>
+        </form>
+        <form th:action="@{/basket/{id}/decrease(id = ${basket.id})}" th:method="POST">
+            <button type="submit">-</button>
+        </form>
+        <form th:action="@{/basket/{id}(id = ${basket.id})}" th:method="POST">
+            <button type="submit">Удалить товар</button>
+        </form>
+        <hr>
+    </th:block>
+    <a href="/products">Выйти из корзины</a>
+</main>
+<script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
