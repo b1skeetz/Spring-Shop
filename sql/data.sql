@@ -120,7 +120,7 @@ create table users (
     first_name varchar(30) not null,
     last_name varchar(30) not null,
     login varchar(30) not null,
-    password varchar(30) not null,
+    password varchar(150) not null,
     phone varchar(17) not null,
     role int2 not null
 );

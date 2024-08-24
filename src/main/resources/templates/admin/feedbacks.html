@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<th:block th:replace="~{fragment/head_fragment :: head('Список отзывов на товар')}"></th:block>
+<body>
+<th:block th:replace="~{fragment/header_fragment :: header}"></th:block>
+
+<main>
+    <th:block th:each="feedback : ${feedbacks}">
+        <p>Пользователь: <b th:text="${feedback.getUser().firstName + ' ' + feedback.getUser().lastName}"/></p>
+        <p>Оценка: <b th:text="${feedback.mark}"/> </p>
+        <p>Комментарий: <b th:text="${feedback.content}"/></p>
+        <form th:action="@{/feedbacks/approve/{id}(id = ${feedback.id})}" th:method="POST">
+            <input type="submit" class="btn btn-outline-success" th:value="Выложить" th:classappend="${#authorization.expr('hasRole(''admin'')') ? '' : 'disabled'}">
+        </form>
+        <form th:action="@{/feedbacks/delete/{id}(id = ${feedback.id})}" th:method="POST">
+            <input type="submit" class="btn btn-outline-danger" th:value="Удалить" th:classappend="${#authorization.expr('hasRole(''admin'')') ? '' : 'disabled'}">
+        </form>
+        <hr>
+    </th:block>
+    <a th:href="@{/products}" class="btn btn-outline-success" th:classappend="${#authorization.expr('hasRole(''admin'')') ? '' : 'disabled'}">Вернуться</a>
+</main>
+
+</body>
+</html>

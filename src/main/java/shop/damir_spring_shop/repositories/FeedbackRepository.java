@@ -12,4 +12,6 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
     Optional<Feedback> findFeedbackByUserAndProduct(User user, Product product);
 
     List<Feedback> findFeedbackByReleaseStatus(boolean status);
+
+    List<Feedback> findFeedbackByProduct_IdAndReleaseStatus(Long id, boolean status);
 }

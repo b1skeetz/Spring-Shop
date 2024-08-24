@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ import shop.damir_spring_shop.repositories.UserRepository;
 @RequestMapping(path = "/registration")
 public class RegistrationController {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping
     private String registrationPage(Model model){
@@ -28,8 +30,9 @@ public class RegistrationController {
 
     @PostMapping
     private String registration(@ModelAttribute(name = "user") User user){
-        // TODO Настроить шифровку паролей
         user.setRole(UserRole.USER);
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
         userRepository.save(user);
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 user.getLogin(), user.getPassword()

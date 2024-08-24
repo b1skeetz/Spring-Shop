@@ -38,6 +38,7 @@
     </th:block>
     <hr>
     <th:block th:each="oneFeedback : ${feedbacks}">
+        <p th:text="${oneFeedback.user.firstName + ' ' + oneFeedback.user.lastName}"/>
         <p th:text="${oneFeedback.content}"/>
         <p th:text="${oneFeedback.mark}"/>
         <hr>

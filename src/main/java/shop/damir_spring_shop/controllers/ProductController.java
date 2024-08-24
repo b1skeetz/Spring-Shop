@@ -5,7 +5,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import shop.damir_spring_shop.models.*;
-import shop.damir_spring_shop.models.enums.UserRole;
 import shop.damir_spring_shop.repositories.*;
 import shop.damir_spring_shop.services.UserService;
 
@@ -17,7 +16,7 @@ import java.util.Optional;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping(path = "/products")
-public class DataController {
+public class ProductController {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final PropertyRepository propertyRepository;
@@ -90,6 +89,14 @@ public class DataController {
         return "edit_product";
     }
 
+    @GetMapping(path = "/{id}/feedbacks")
+    public String getProductFeedbacks(@PathVariable(name = "id") Long id, Model model){
+        List<Feedback> feedbacks = feedbackRepository.findFeedbackByProduct_IdAndReleaseStatus(id, false);
+        model.addAttribute("feedbacks", feedbacks);
+
+        return "admin/feedbacks";
+    }
+
     @PostMapping("/edit/{id}")
     public String edit(@ModelAttribute("product") Product product,
                        @RequestParam(name = "propValue") List<String> propValues,
@@ -115,7 +122,7 @@ public class DataController {
     public String getOneProduct(@PathVariable("id") Long id, Model model,
                                 @ModelAttribute("feedback") Feedback feedback) {
         Product product = productRepository.findProductsById(id);
-        List<Feedback> approvedFeedbacks = feedbackRepository.findFeedbackByReleaseStatus(true);
+        List<Feedback> approvedFeedbacks = feedbackRepository.findFeedbackByProduct_IdAndReleaseStatus(id, true);
         model.addAttribute("product", product);
         model.addAttribute("feedbacks", approvedFeedbacks);
 
