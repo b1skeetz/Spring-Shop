@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<th:block th:replace="~{fragment/head_fragment :: head('Список заказов')}"></th:block>
+<body>
+<th:block th:replace="~{fragment/header_fragment :: header}"></th:block>
+
+<main>
+    <th:block th:each="order : ${orders}">
+        <p>Код заказа: <b th:text="${order.number}"/></p>
+        <p>Статус: <b th:text="${order.status}"/></p>
+        <p>Дата оформления: <b th:text="${order.createdAt}"></b></p>
+        <th:block th:each="basket : ${order.baskets}" th:style="${'border-bottom:1px'}">
+            <p>Название товара: <span th:text="${basket.product.name}"></span></p>
+            <p>Цена: <span th:text="${basket.product.price}"></span> тг.</p>
+            <p>Количество: <span th:text="${basket.amount}"></span> шт.</p>
+        </th:block>
+        <h5>Общая сумма: <span th:text="${order.totalSum}"></span></h5>
+        <form th:action="@{/admin-orders/{id}/status(id = ${order.id})}" th:method="POST" th:object="${orderStatus}">
+            <label for="status">Выберите статус заказа:</label>
+            <select class="form-select" name="status" id="status" th:field="*{status}">
+                <option th:value="0" disabled>Выберите статус...</option>
+                <option th:each="stat : ${T(shop.damir_spring_shop.models.enums.OrderStatus).values()}" th:value="${stat}" th:text="${stat}">
+            </select>
+            <input type="submit" value="Сохранить">
+        </form>
+        <hr>
+    </th:block>
+    <a th:href="@{/products}" class="btn btn-outline-success" th:classappend="${#authorization.expr('hasRole(''admin'')') ? '' : 'disabled'}">Вернуться</a>
+</main>
+
+</body>
+</html>

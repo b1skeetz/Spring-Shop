@@ -12,8 +12,10 @@
                 <a th:href="@{/registration}" class="btn btn-outline-primary">Регистрация</a>
             </th:block>
             <th:block th:if="${#authorization.expr('isAuthenticated()')}">
-                <a th:href="@{/logout}" class="btn btn-outline-danger" th:text="${'Выход (' + #authentication.name + ')'}"></a>
                 <a th:href="@{/basket}" class="btn btn-outline-primary me-3">Перейти в корзину</a>
+                <a th:href="@{/orders}" class="btn btn-outline-primary me-3">Перейти к заказам</a>
+                <a th:href="@{/admin-orders}" class="btn btn-outline-primary me-3" th:classappend="${#authorization.expr('hasRole(''admin'')') ? '' : 'disabled'}" th:text="${'Заказы'}"></a>
+                <a th:href="@{/logout}" class="btn btn-outline-danger" th:text="${'Выход (' + #authentication.name + ')'}"></a>
             </th:block>
         </div>
     </div>

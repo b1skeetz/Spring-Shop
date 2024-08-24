@@ -24,6 +24,7 @@ drop table prop_values;
 drop table feedbacks;
 drop table baskets;
 drop table users;
+drop table orders;
 
 
 create table categories
@@ -134,8 +135,20 @@ create table baskets(
     id serial8 primary key,
     user_id int8 not null,
     product_id int8 not null,
+    order_id int8,
     amount int4 not null default 1,
+    status int2 not null default 0,
     foreign key (user_id) references users (id),
     foreign key (product_id) references products (id),
-    unique (user_id, product_id)
+    foreign key (order_id) references orders (id)
+);
+
+create table orders(
+    id serial8 primary key,
+    user_id int8 not null,
+    number text not null,
+    status int2 not null default 0,
+    total_sum int4 not null,
+    created_at timestamp not null,
+    foreign key (user_id) references users (id)
 );

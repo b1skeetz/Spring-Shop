@@ -31,4 +31,7 @@ public class Product {
 
     @OneToMany(mappedBy = "product")
     private List<Feedback> feedbacks;
+
+    @OneToMany(mappedBy = "product")
+    private List<Basket> baskets;
 }

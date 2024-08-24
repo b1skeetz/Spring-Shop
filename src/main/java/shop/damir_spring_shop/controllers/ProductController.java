@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import shop.damir_spring_shop.models.*;
+import shop.damir_spring_shop.models.enums.BasketStatus;
 import shop.damir_spring_shop.repositories.*;
 import shop.damir_spring_shop.services.UserService;
 
@@ -131,11 +132,11 @@ public class ProductController {
         for (Feedback productFeedback : approvedFeedbacks) {
             sum += productFeedback.getMark();
         }
-        avgRate = sum / product.getFeedbacks().size();
+        avgRate = sum / approvedFeedbacks.size();
         model.addAttribute("averageRate", avgRate);
 
         User currentUser = userService.getCurrentUser();
-        boolean ifBasketExist = basketRepository.existsByUserIdAndProductId(currentUser.getId(), product.getId());
+        boolean ifBasketExist = basketRepository.existsByUserIdAndProductIdAndStatus(currentUser.getId(), product.getId(), BasketStatus.PENDING);
         model.addAttribute("ifBasketExist", ifBasketExist);
 
         return "one_product";
@@ -151,7 +152,7 @@ public class ProductController {
         Optional<Feedback> ifFeedbackExists = feedbackRepository.findFeedbackByUserAndProduct(currentUser, currentProduct);
         if (ifFeedbackExists.isPresent()) {
             System.out.println("Вы уже отправляли отзыв!");
-            return "one_product";
+            return "redirect:/products/{id}";
         }
         feedback.setReleaseStatus(false);
         feedback.setUser(currentUser);
@@ -172,6 +173,7 @@ public class ProductController {
         basket.setUser(currentUser);
         basket.setProduct(currentProduct);
         basket.setAmount(amount);
+        basket.setStatus(BasketStatus.PENDING);
 
         basketRepository.save(basket);
 

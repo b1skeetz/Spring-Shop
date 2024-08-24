@@ -19,7 +19,11 @@
         </form>
         <hr>
     </th:block>
-    <a href="/products">Выйти из корзины</a>
+    <h5>Общая сумма: <span th:text="${totalSum}"></span></h5>
+    <form th:action="@{/orders/create}" th:method="POST">
+        <input type="submit" class="btn btn-outline-success" th:classappend="${isBasketEmpty == true ? 'disabled' : ''}" value="Оформить заказ"/>
+    </form>
+    <a href="/products" class="btn btn-outline-primary">Выйти из корзины</a>
 </main>
 <script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 </body>
