@@ -28,11 +28,11 @@ public class AdminOrderController {
 
     @PostMapping("/{id}/status")
     public String changeStatus(@PathVariable("id") Long id,
-                               @ModelAttribute("orderStatus") Order orderStatus){
+                               @ModelAttribute("orderStatus") OrderStatus orderStatus){
         Order orderFromDb = orderRepository.findById(id).orElse(null);
 
         if(orderFromDb != null){
-            orderFromDb.setStatus(orderStatus.getStatus());
+            orderFromDb.setStatus(orderStatus);
             orderRepository.save(orderFromDb);
         }
 

@@ -6,11 +6,12 @@
 <main>
 
     <th:block th:object="${product}">
+        <h5>Название: <b th:text="${product.getName()}"/></h5>
         <p>Категория: <b th:text="${product.getCategory().getName()}"/></p>
-        <p>Название: <b th:text="${product.getName()}"/></p>
-        <p>Стоимость: <b th:text="${product.getPrice()}"/></p>
+        <p>Стоимость: <b th:text="${product.getPrice()}"/> тг.</p>
+        <h5>Характеристики:</h5>
         <th:block th:each="propValue : ${product.getPropValues()}">
-            <p th:text="${propValue.property.getName() + ' : ' + propValue.getValue()}"></p>
+            <p th:text="${propValue.property.getName() + ': ' + propValue.getValue()}"></p>
         </th:block>
         <a th:href="@{/products}">Вернуться</a>
         <hr>
@@ -20,7 +21,7 @@
             <button type="submit">Добавить в корзину</button>
         </form>
     </th:block>
-    <th:block>
+    <th:block th:if="${#authorization.expr('isAuthenticated()') && ifFeedbackExists == false}">
         <form th:action="@{/products/{id}(id = ${product.id})}" th:method="POST" th:object="${feedback}">
             <label for="mark">Поставьте оценку: </label>
             <select name="mark" id="mark" th:field="*{mark}">
@@ -35,15 +36,23 @@
             <input type="text" th:field="*{content}" id="content">
             <input type="submit" value="Отправить отзыв">
         </form>
+        <hr>
     </th:block>
-    <hr>
+    <th:block th:if="${#authorization.expr('isAuthenticated()') && ifFeedbackExists == true}">
+        <h4>Благодарим вас за оставленный отзыв!</h4>
+        <hr>
+    </th:block>
+    <th:block th:if="${#authorization.expr('!isAuthenticated()')}">
+        <h4>Чтобы отправить отзыв надо зарегистрироваться или войти</h4>
+        <hr>
+    </th:block>
     <th:block th:each="oneFeedback : ${feedbacks}">
         <p th:text="${oneFeedback.user.firstName + ' ' + oneFeedback.user.lastName}"/>
         <p th:text="${oneFeedback.content}"/>
         <p th:text="${oneFeedback.mark}"/>
         <hr>
     </th:block>
-    <h3>Средний рейтинг: <span th:text="${averageRate}"></span></h3>
+    <h3>Средний рейтинг: <span th:text="${averageRate.toString()}"></span></h3>
 </main>
     <script src="/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 </body>

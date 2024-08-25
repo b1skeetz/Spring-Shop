@@ -29,11 +29,8 @@ public class ProductController {
 
     @GetMapping
     public String getProducts(Model model) {
-        User currentUser = userService.getCurrentUser();
-        List<Product> products = new ArrayList<>();
-        if(currentUser != null){
-            products = productRepository.findAll();
-        }
+        List<Product> products = productRepository.findAll();
+
         model.addAttribute("products", products);
         return "all_products";
     }
@@ -42,7 +39,7 @@ public class ProductController {
     public String filter(@RequestParam(name = "categoryName", required = false) String categoryName, Model model) {
         List<Product> temp = productRepository.findProductsByCategory_NameContains(categoryName);
         if (temp.isEmpty()) {
-            return getProducts(model);
+            return "redirect:/products";
         }
         model.addAttribute("products", temp);
         model.addAttribute("category", categoryName);
@@ -91,7 +88,7 @@ public class ProductController {
     }
 
     @GetMapping(path = "/{id}/feedbacks")
-    public String getProductFeedbacks(@PathVariable(name = "id") Long id, Model model){
+    public String getProductFeedbacks(@PathVariable(name = "id") Long id, Model model) {
         List<Feedback> feedbacks = feedbackRepository.findFeedbackByProduct_IdAndReleaseStatus(id, false);
         model.addAttribute("feedbacks", feedbacks);
 
@@ -128,16 +125,24 @@ public class ProductController {
         model.addAttribute("feedbacks", approvedFeedbacks);
 
         double avgRate;
-        double sum = 0;
+        double sum = 0d;
         for (Feedback productFeedback : approvedFeedbacks) {
             sum += productFeedback.getMark();
         }
-        avgRate = sum / approvedFeedbacks.size();
+        if (approvedFeedbacks.size() != 0) {
+            avgRate = sum / approvedFeedbacks.size();
+        } else {
+            avgRate = 0d;
+        }
         model.addAttribute("averageRate", avgRate);
 
         User currentUser = userService.getCurrentUser();
-        boolean ifBasketExist = basketRepository.existsByUserIdAndProductIdAndStatus(currentUser.getId(), product.getId(), BasketStatus.PENDING);
-        model.addAttribute("ifBasketExist", ifBasketExist);
+        if (currentUser != null) {
+            boolean ifBasketExist = basketRepository.existsByUserIdAndProductIdAndStatus(currentUser.getId(), product.getId(), BasketStatus.PENDING);
+            boolean ifFeedbackExists = feedbackRepository.findFeedbackByUserAndProduct(currentUser, product).isPresent();
+            model.addAttribute("ifBasketExist", ifBasketExist);
+            model.addAttribute("ifFeedbackExists", ifFeedbackExists);
+        }
 
         return "one_product";
     }
@@ -147,6 +152,9 @@ public class ProductController {
                                @ModelAttribute(name = "feedback") Feedback feedback) {
 
         User currentUser = userService.getCurrentUser();
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
         Product currentProduct = productRepository.findProductsById(id);
         model.addAttribute("product", currentProduct);
         Optional<Feedback> ifFeedbackExists = feedbackRepository.findFeedbackByUserAndProduct(currentUser, currentProduct);
@@ -181,7 +189,7 @@ public class ProductController {
     }
 
     @GetMapping("/delete/{id}")
-    public String deleteProduct(@PathVariable("id") Long id){
+    public String deleteProduct(@PathVariable("id") Long id) {
         productRepository.deleteById(id);
         return "redirect:/products";
     }

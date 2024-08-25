@@ -22,7 +22,7 @@ public class BasketController {
     @GetMapping()
     public String showBasket(Model model) {
         User currentUser = userService.getCurrentUser();
-        List<Basket> baskets = basketRepository.findBasketsByUserIdAndStatus(currentUser.getId(), BasketStatus.PENDING);
+        List<Basket> baskets = basketRepository.findBasketsByUserIdAndStatusOrderById(currentUser.getId(), BasketStatus.PENDING);
         int sum = 0;
 
         for (Basket basket : baskets) {
@@ -36,12 +36,12 @@ public class BasketController {
     }
 
     @PostMapping("{id}/increase")
-    public String increaseAmount(@PathVariable("id") Long id, Model model) {
+    public String increaseAmount(@PathVariable("id") Long id) {
         Basket basket = basketRepository.findBasketById(id);
         basket.setAmount(basket.getAmount() + 1);
         basketRepository.save(basket);
 
-        return showBasket(model);
+        return "redirect:/basket";
     }
 
     @PostMapping("{id}/decrease")
@@ -50,11 +50,11 @@ public class BasketController {
         basket.setAmount(basket.getAmount() - 1);
         if (basket.getAmount() == 0) {
             deleteBasket(id, model);
-            return showBasket(model);
+            return "redirect:/basket";
         }
         basketRepository.save(basket);
 
-        return showBasket(model);
+        return "redirect:/basket";
     }
 
     @PostMapping("{id}")
@@ -62,6 +62,6 @@ public class BasketController {
         Basket basketForDelete = basketRepository.findBasketById(id);
         basketRepository.delete(basketForDelete);
 
-        return showBasket(model);
+        return "redirect:/basket";
     }
 }

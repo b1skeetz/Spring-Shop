@@ -15,9 +15,9 @@
             <p>Количество: <span th:text="${basket.amount}"></span> шт.</p>
         </th:block>
         <h5>Общая сумма: <span th:text="${order.totalSum}"></span></h5>
-        <form th:action="@{/admin-orders/{id}/status(id = ${order.id})}" th:method="POST" th:object="${orderStatus}">
+        <form th:action="@{/admin-orders/{id}/status(id = ${order.id})}" th:method="POST">
             <label for="status">Выберите статус заказа:</label>
-            <select class="form-select" name="status" id="status" th:field="*{status}">
+            <select class="form-select" name="status" id="status" th:name="orderStatus">
                 <option th:value="0" disabled>Выберите статус...</option>
                 <option th:each="stat : ${T(shop.damir_spring_shop.models.enums.OrderStatus).values()}" th:value="${stat}" th:text="${stat}">
             </select>

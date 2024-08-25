@@ -16,7 +16,7 @@
     <th:block th:each="product : ${products}">
         <p>Категория: <b th:text="${product.getCategory().getName()}"/></p>
         <p>Название: <a th:href="@{/products/{id}(id = ${product.getId()})}" th:text="${product.getName()}"/></p>
-        <p>Стоимость: <b th:text="${product.getPrice()}"/></p>
+        <p>Стоимость: <b th:text="${product.getPrice()}"/> тг.</p>
         <a th:href="@{/products/edit/{id}(id = ${product.getId()})}" class="btn btn-outline-success" th:classappend="${#authorization.expr('hasRole(''admin'')') ? '' : 'disabled'}">Редактировать</a>
         <a th:href="@{/products/{id}/feedbacks(id = ${product.getId()})}" class="btn btn-outline-success" th:classappend="${#authorization.expr('hasRole(''admin'')') ? '' : 'disabled'}">Посмотреть отзывы</a>
         <hr>
