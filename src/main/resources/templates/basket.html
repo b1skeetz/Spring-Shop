@@ -4,6 +4,9 @@
 <body>
 <th:block th:replace="~{fragment/header_fragment :: header}"></th:block>
 <main>
+    <th:block th:if="${baskets.size() == 0}">
+        <p>Корзина пуста! Добавьте товары на главной странице</p>
+    </th:block>
     <th:block th:each="basket : ${baskets}">
         <p>Название товара: <span th:text="${basket.product.name}"></span></p>
         <p>Цена: <span th:text="${basket.product.price}"></span> тг.</p>

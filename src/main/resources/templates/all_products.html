@@ -4,9 +4,9 @@
 <body>
 <th:block th:replace="~{fragment/header_fragment :: header}"></th:block>
 <main>
-    <form th:method="GET" th:action="@{/data/products/filter{categoryName}(categoryName = ${category})}" th:object="${category}">
+    <form th:method="GET" th:action="@{/products/filter{categoryName}(categoryName = ${categoryName})}">
         <label for="category">
-            <input type="text" id="category" th:name="categoryName"  th:value="${category}" placeholder="Введите название продукта...">
+            <input type="text" id="category" th:name="categoryName"  th:value="${categoryName}" placeholder="Введите название категории...">
             <input type="submit" value="Отфильтровать">
         </label>
     </form>

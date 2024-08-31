@@ -30,8 +30,10 @@ public class ProductController {
     @GetMapping
     public String getProducts(Model model) {
         List<Product> products = productRepository.findAll();
+        String categoryName = "";
 
         model.addAttribute("products", products);
+        model.addAttribute("categoryName", categoryName);
         return "all_products";
     }
 
