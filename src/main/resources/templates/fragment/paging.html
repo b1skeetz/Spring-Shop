@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<a th:fragment="paging(pageNum, label, tooltip)" class="page-link"
+   th:href="@{'/products?' + 'page=' + ${pageNum} + '&size=' + ${pageSize}}"
+   th:title="${tooltip}" rel="tooltip">
+  [[${label}]]
+</a>
+</body>
+</html>

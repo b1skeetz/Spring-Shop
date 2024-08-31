@@ -1,6 +1,9 @@
 package shop.damir_spring_shop.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,23 +31,43 @@ public class ProductController {
     private final UserService userService;
 
     @GetMapping
-    public String getProducts(Model model) {
-        List<Product> products = productRepository.findAll();
+    public String getProducts(
+            Model model,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "3") int size) {
+        Pageable paging = PageRequest.of(page - 1, size);
+        Page<Product> productsPage = productRepository.findAll(paging);
+        List<Product> products = productsPage.getContent();
         String categoryName = "";
 
         model.addAttribute("products", products);
         model.addAttribute("categoryName", categoryName);
+        model.addAttribute("currentPage", productsPage.getNumber() + 1);
+        model.addAttribute("totalItems", productsPage.getTotalElements());
+        model.addAttribute("totalPages", productsPage.getTotalPages());
+        model.addAttribute("pageSize", size);
         return "all_products";
     }
 
     @GetMapping(path = "/filter")
-    public String filter(@RequestParam(name = "categoryName", required = false) String categoryName, Model model) {
-        List<Product> temp = productRepository.findProductsByCategory_NameContains(categoryName);
+    public String filter(@RequestParam(name = "categoryName", required = false) String categoryName,
+                         Model model,
+                         @RequestParam(defaultValue = "1") int page,
+                         @RequestParam(defaultValue = "3") int size) {
+        Pageable paging = PageRequest.of(page - 1, size);
+        Page<Product> temp = productRepository.findProductsByCategory_NameContains(categoryName, paging);
         if (temp.isEmpty()) {
             return "redirect:/products";
         }
-        model.addAttribute("products", temp);
+        List<Product> products = temp.getContent();
+
+        model.addAttribute("products", products);
         model.addAttribute("category", categoryName);
+        model.addAttribute("categoryName", categoryName);
+        model.addAttribute("currentPage", temp.getNumber() + 1);
+        model.addAttribute("totalItems", temp.getTotalElements());
+        model.addAttribute("totalPages", temp.getTotalPages());
+        model.addAttribute("pageSize", size);
 
         return "all_products";
     }
