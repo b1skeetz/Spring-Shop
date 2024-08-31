@@ -17,14 +17,14 @@
 -- Диагональ     -> 27               -> 21.5
 -- Матрица       -> TN               -> AH-IPS
 -- Разрешение    -> 2560*1440        -> 1920*1080
-drop table categories;
-drop table products;
-drop table properties;
-drop table prop_values;
-drop table feedbacks;
-drop table baskets;
-drop table users;
-drop table orders;
+drop table if exists prop_values;
+drop table if exists properties;
+drop table if exists feedbacks;
+drop table if exists baskets;
+drop table if exists orders;
+drop table if exists products;
+drop table if exists categories;
+drop table if exists users;
 
 
 create table categories
@@ -103,6 +103,20 @@ values ('AOC', 4, 4),
        ('AH-IPS', 6, 4),
        ('1920*1080', 7, 4);
 
+create table users (
+                       id serial8 primary key,
+                       first_name varchar(30) not null,
+                       last_name varchar(30) not null,
+                       login varchar(30) not null,
+                       password varchar(150) not null,
+                       phone varchar(17) not null,
+                       role int2 not null
+);
+
+insert into users (first_name, last_name, login, password, phone, role)
+values ('Admin', 'Admin', 'admin', '$2a$12$/mpA17Y80YQxMTU2PaOLTu9IU0jawJunotEi7qW.5fFBEEiTozE6K', '+77777777777', 0);
+-- password: admin
+
 create table feedbacks
 (
     id serial8 primary key,
@@ -116,20 +130,15 @@ create table feedbacks
     unique (user_id, product_id)
 );
 
-create table users (
-    id serial8 primary key,
-    first_name varchar(30) not null,
-    last_name varchar(30) not null,
-    login varchar(30) not null,
-    password varchar(150) not null,
-    phone varchar(17) not null,
-    role int2 not null
+create table orders(
+                       id serial8 primary key,
+                       user_id int8 not null,
+                       number text not null,
+                       status int2 not null default 0,
+                       total_sum int4 not null,
+                       created_at timestamp not null,
+                       foreign key (user_id) references users (id)
 );
-
-insert into users (first_name, last_name, login, password, phone, role)
-VALUES ('Damir', 'Kadyrzhanov', 'damirk120404@gmail.com', '123456', '+77777777777', 1);
-insert into users (first_name, last_name, login, password, phone, role)
-values ('Admin', 'Admin', 'admin', 'admin', '+77777777777', 0);
 
 create table baskets(
     id serial8 primary key,
@@ -143,12 +152,3 @@ create table baskets(
     foreign key (order_id) references orders (id)
 );
 
-create table orders(
-    id serial8 primary key,
-    user_id int8 not null,
-    number text not null,
-    status int2 not null default 0,
-    total_sum int4 not null,
-    created_at timestamp not null,
-    foreign key (user_id) references users (id)
-);
